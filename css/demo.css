@@ -7,6 +7,14 @@
 	color: #E81123;
 }
 
+.alert {
+    padding: 0;
+}
+
+.center-align {
+    text-align: center;
+}
+
 .view-text,
 .view--video,
 .view--snapshot {

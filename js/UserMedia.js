@@ -2,15 +2,15 @@
     'use strict';
 
     var mediaStream = null;
-    var webcamList = [];
-    var currentCam = null;
-    var photoReady = false;
+    var webcamList  = [];
+    var currentCam  = null;
+    var photoReady  = false;
     
     // writeError(string) - Provides a way to display errors to the user
 
     var writeError = function(string) {
         var elem = document.getElementById('error');
-        var p = document.createElement('div');
+        var p    = document.createElement('div');
         p.appendChild(document.createTextNode('ERROR: ' + string));
         elem.appendChild(p);
     };
@@ -59,8 +59,8 @@
             }
             else {
                 var imgData = canvas.toDataURL('image/jpeg');
-                var link = document.getElementById('saveImg');
-                link.href = imgData;
+                var link    = document.getElementById('saveImg');
+                link.href   = imgData;
                 link.download = 'myPhoto.jpg';
                 link.click();
             }
@@ -79,21 +79,21 @@
             return;
         }
 
-        var video = document.getElementById('videoTag');
-        var canvas = document.getElementById('canvasTag');
+        var video       = document.getElementById('videoTag');
+        var canvas      = document.getElementById('canvasTag');
         canvas.removeEventListener('click', savePhoto);
-        var videoWidth = video.videoWidth;
+        var videoWidth  = video.videoWidth;
         var videoHeight = video.videoHeight;
 
         if (canvas.width !== videoWidth || canvas.height !== videoHeight) {
-            canvas.width = videoWidth;
+            canvas.width  = videoWidth;
             canvas.height = videoHeight;
         }
 
-        var ctx = canvas.getContext('2d');
+        var ctx    = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
         photoReady = true;
-        document.getElementById('photoViewText').innerHTML = 'Click or tap below to save to a file';
+        document.getElementById('photoViewText').innerHTML = 'Click or tap below to save as .jpg';
         canvas.addEventListener('click', savePhoto);
 
     };
@@ -183,14 +183,13 @@
 
     var init = function() {
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-        document.getElementById('videoTag').addEventListener('click', capture, false);
-        document.getElementById('switch').addEventListener('click', nextWebCam, false);
+        document.getElementById('videoTag').addEventListener('click', capture,   false);
+        document.getElementById('switch')  .addEventListener('click', nextWebCam, false);
 
         if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
             navigator.mediaDevices.enumerateDevices().then(devicesCallback);
         }
         else if (navigator.getUserMedia) {
-            document.getElementById('tooltip').style.display = 'block';
             document.getElementById('tooltip').innerHTML = 'Cannot switch web cams because navigator.mediaDevices.enumerateDevices is unsupported by your browser.';
 
             navigator.getUserMedia({ video: true }, initializeVideoStream, getUserMediaError);
