@@ -8,9 +8,7 @@
 
     // CSS filters 
     var index     = 0;
-    var filters   = ['grayscale', 'sepia', 'blur', 'brightness',
-                   'contrast', 'hue-rotate', 'hue-rotate2',
-                   'hue-rotate3', 'saturate', 'invert', ''];
+    var filters   = ['grayscale', 'sepia', 'blur', 'invert', 'brightness', 'contrast', ''];
     
     // init() - The entry point to the demo code
     // 1. Detect whether getUserMedia() is supported, show an error if not
@@ -20,9 +18,10 @@
 
     var init = function () {
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-        document.getElementById('videoTag')      .addEventListener('click', capture,         false);
-        document.getElementById('switch')        .addEventListener('click', nextWebCam,      false);
-        document.getElementById('change-filters').addEventListener('click', changeCssFilter, false);
+        document.getElementById('videoTag')          .addEventListener('click', capture,         false);
+        document.getElementById('switch')            .addEventListener('click', nextWebCam,      false);
+        document.getElementById('change-vid-filters').addEventListener('click', changeCssFilterOnVid, false);
+        document.getElementById('change-img-filters').addEventListener('click', changeCssFilterOnImg, false);
 
         if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
             navigator.mediaDevices.enumerateDevices().then(devicesCallback);
@@ -143,7 +142,8 @@
                 height: 720,
                 deviceId: { exact: webcamList[currentCam] }
             }
-        }).then(initializeVideoStream).catch(getUserMediaError);
+        }).then(initializeVideoStream)
+            .catch(getUserMediaError);
     };
 
     
@@ -197,7 +197,7 @@
 
     var writeError = function (string) {
         var elem = document.getElementById('error');
-        var p = document.createElement('div');
+        var p    = document.createElement('div');
         p.appendChild(document.createTextNode('ERROR: ' + string));
         elem.appendChild(p);
     };
@@ -216,21 +216,38 @@
     };
 
 
-    // changeCssFilters(e) - Cycle through CSS filters applied to the media stream
-    // 1. Grab a reference to the button
-    // 2. Loop through all of the filters
+    // changeCssFiltersOnVid() - Cycle through CSS filters applied to the video stream
+    // 1. Grab a reference to the video tag
+    // 2. Keep the original CSS classes while still adding the filters
+    // 3. Loop through all of the filters
 
-    var changeCssFilter = function (e) {
-        //var el = e.target
-        var el = document.getElementById('videoTag')
-        //el.className = '';
+    var changeCssFilterOnVid = function () {
+        var el       = document.getElementById('videoTag');
+        el.className = 'view--video__video';
 
         var effect = filters[index++ % filters.length]
         if (effect) {
             el.classList.add(effect);
+            console.log(el.classList);
         }
     }
 
+
+    // changeCssFiltersOnImg() - Cycle through CSS filters applied to the static image
+    // 1. Grab a reference to image canvas
+    // 2. Keep the original CSS classes while still adding the filters
+    // 3. Loop through all of the filters
+
+    var changeCssFilterOnImg = function () {
+        var el       = document.getElementById('canvasTag');
+        el.className = 'view--snapshot__canvas';
+
+        var effect = filters[index++ % filters.length]
+        if (effect) {
+            el.classList.add(effect);
+            console.log(el.classList);
+        }
+    }
 
 
     init();
