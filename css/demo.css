@@ -1,5 +1,4 @@
-﻿/* Your custom CSS goes here */
-.hide {
+﻿.hide {
 	display: none;
 }
 
@@ -92,4 +91,15 @@
 		order: 4;
 	}
 
+}
+
+/* CSS Filters */
+.grayscale {
+  filter: grayscale(1);
+}
+.sepia {
+  filter: sepia(1);
+}
+.blur {
+  filter: blur(3px);
 }

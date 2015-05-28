@@ -5,6 +5,12 @@
     var webcamList  = [];
     var currentCam  = null;
     var photoReady  = false;
+
+    // CSS filters 
+    var index     = 0;
+    var filters   = ['grayscale', 'sepia', 'blur', 'brightness',
+                   'contrast', 'hue-rotate', 'hue-rotate2',
+                   'hue-rotate3', 'saturate', 'invert', ''];
     
     // init() - The entry point to the demo code
     // 1. Detect whether getUserMedia() is supported, show an error if not
@@ -14,8 +20,9 @@
 
     var init = function () {
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-        document.getElementById('videoTag').addEventListener('click', capture,    false);
-        document.getElementById('switch')  .addEventListener('click', nextWebCam, false);
+        document.getElementById('videoTag')      .addEventListener('click', capture,         false);
+        document.getElementById('switch')        .addEventListener('click', nextWebCam,      false);
+        document.getElementById('change-filters').addEventListener('click', changeCssFilter, false);
 
         if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
             navigator.mediaDevices.enumerateDevices().then(devicesCallback);
@@ -208,7 +215,24 @@
         }
     };
 
-    // Run the app
+
+    // changeCssFilters(e) - Cycle through CSS filters applied to the media stream
+    // 1. Grab a reference to the button
+    // 2. Loop through all of the filters
+
+    var changeCssFilter = function (e) {
+        //var el = e.target
+        var el = document.getElementById('videoTag')
+        //el.className = '';
+
+        var effect = filters[index++ % filters.length]
+        if (effect) {
+            el.classList.add(effect);
+        }
+    }
+
+
+
     init();
 
 }());
