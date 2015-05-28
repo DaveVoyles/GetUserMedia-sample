@@ -6,14 +6,30 @@
     var currentCam  = null;
     var photoReady  = false;
     
-    // writeError(string) - Provides a way to display errors to the user
+    // init() - The entry point to the demo code
+    // 1. Detect whether getUserMedia() is supported, show an error if not
+    // 2. Set up necessary event listners for video tag and the webcam 'switch' button
+    // 3. Detect whether device enumeration is supported, use the legacy media capture API to start the demo otherwise
+    // 4. Enumerate the webcam devices when the browser supports device enumeration
 
-    var writeError = function(string) {
-        var elem = document.getElementById('error');
-        var p    = document.createElement('div');
-        p.appendChild(document.createTextNode('ERROR: ' + string));
-        elem.appendChild(p);
+    var init = function () {
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        document.getElementById('videoTag').addEventListener('click', capture,    false);
+        document.getElementById('switch')  .addEventListener('click', nextWebCam, false);
+
+        if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+            navigator.mediaDevices.enumerateDevices().then(devicesCallback);
+        }
+        else if (navigator.getUserMedia) {
+            document.getElementById('tooltip').innerHTML = 'Cannot switch web cams because navigator.mediaDevices.enumerateDevices is unsupported by your browser.';
+
+            navigator.getUserMedia({ video: true /*, audio: true */ }, initializeVideoStream, getUserMediaError);
+        }
+        else {
+            writeError('You are using a browser that does not support the Media Capture API');
+        }
     };
+
     
     // initializeVideoStream() - Callback function when getUserMedia() returns successfully with a mediaStream object
     // 1. Set the mediaStream on the video tag
@@ -34,20 +50,9 @@
         }
     };
 
-    // getUserMediaError() - Callback function when getUserMedia() returns error
-    // 1. Show the error message with the error.name
 
-    var getUserMediaError = function(e) {
-        if (e.name.indexOf('NotFoundError') >= 0) {
-            writeError('Webcam not found.');
-        }
-        else {
-            writeError('The following error occurred: "' + e.name + '" Please check your webcam device(s) and try again.');
-        }
-    };
-
-    // savePhoto() - Function invoked when click on the canvas element
-    // 1. If msSaveBlob is supported, get the the photo blob from the canvas and save the image file
+    // savePhoto() - Function invoked when user clicks on the canvas element
+    // 1. If msSaveBlob is supported, get the photo blob from the canvas and save the image file
     // 2. Otherwise, set up the download attribute of the anchor element and download the image file
 
     var savePhoto = function() {
@@ -70,8 +75,10 @@
         }
     };
 
+
     // capture() - Function called when click on video tag
     // 1. Capture a video frame from the video tag and render on the canvas element
+    // 2. Set the H/W of the canvas to match that of the size of the video
 
     var capture = function() {
 
@@ -97,6 +104,7 @@
         canvas.addEventListener('click', savePhoto);
 
     };
+
 
     // nextWebCam() - Function to rotate through the webcam device list
     // 1. Release the current webcam (if there is one in use)
@@ -130,6 +138,7 @@
             }
         }).then(initializeVideoStream).catch(getUserMediaError);
     };
+
     
     // deviceChanged() - Handle devicechange event
     // 1. Reset webcamList
@@ -144,6 +153,7 @@
         /*eslint-enable*/
     };
     
+
     // devicesCallback() - Callback function for device enumeration
     // 1. Identify all webcam devices and store the info in the webcamList
     // 2. Start the demo with the first webcam on the list
@@ -175,30 +185,30 @@
         navigator.mediaDevices.addEventListener('devicechange', deviceChanged);
     };
 
-    // init() - The entry point to the demo code
-    // 1. Detect whether getUserMedia() is supported, show an error if not
-    // 2. Set up necessary event listners for video tag and the webcam 'switch' button
-    // 3. Detect whether device enumeration is supported, use the legacy media capture API to start the demo otherwise
-    // 4. Enumerate the webcam devices when the browser supports device enumeration
 
-    var init = function() {
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-        document.getElementById('videoTag').addEventListener('click', capture,   false);
-        document.getElementById('switch')  .addEventListener('click', nextWebCam, false);
+    // writeError(string) - Provides a way to display errors to the user
 
-        if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-            navigator.mediaDevices.enumerateDevices().then(devicesCallback);
-        }
-        else if (navigator.getUserMedia) {
-            document.getElementById('tooltip').innerHTML = 'Cannot switch web cams because navigator.mediaDevices.enumerateDevices is unsupported by your browser.';
+    var writeError = function (string) {
+        var elem = document.getElementById('error');
+        var p = document.createElement('div');
+        p.appendChild(document.createTextNode('ERROR: ' + string));
+        elem.appendChild(p);
+    };
 
-            navigator.getUserMedia({ video: true }, initializeVideoStream, getUserMediaError);
+
+    // getUserMediaError() - Callback function when getUserMedia() returns error
+    // 1. Show the error message with the error.name
+
+    var getUserMediaError = function (e) {
+        if (e.name.indexOf('NotFoundError') >= 0) {
+            writeError('Webcam not found.');
         }
         else {
-            writeError('You are using a browser that does not support the Media Capture API');
+            writeError('The following error occurred: "' + e.name + '" Please check your webcam device(s) and try again.');
         }
-    };    
-    
+    };
+
+    // Run the app
     init();
 
 }());
