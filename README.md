@@ -1,7 +1,7 @@
 # GetUserMedia-sample
 #### Author(s): Dave Voyles | [@DaveVoyles](http://www.twitter.com/DaveVoyles)
 #### URL: [www.DaveVoyles.com][1]
-#### Working demo: [http://getusermediaapp.azurewebsites.net/][3]
+#### Working demo: [http://getusermediaapp.azurewebsites.net//][3]
 #### Tutorial / blog post: [http://www.davevoyles.com/using-the-media-capture-api-in-the-browser/][2]
 
 ----------
